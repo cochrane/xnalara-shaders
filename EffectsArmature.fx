@@ -290,8 +290,7 @@ float4 CombineBumpColors(float4 color0, float4 color1, float amount1, float4 col
 float4 CombinedBumpColor(BumpVertexShaderOutput input)
 {
 	if (!EnableBumpMaps) {
-		return float4(0.0, 0.0, 1, 1);
-		// return float4(0.5, 0.5, 1, 1);
+		return float4(0.5, 0.5, 1, 1); // Note: After *2-1, will be 0, 0, 1
 	}
 	else {
 		float4 bump0Color = tex2D(BumpTextureSampler, input.TexCoord);
@@ -640,7 +639,6 @@ float4 DiffuseLightmapPS_3(BasicVertexShaderOutput input) : COLOR0
  * - ApplyBumpBlend takes the phong shading color as a parameter.
  * - Both ApplyBumpBlend and ApplyBumpBlendSpecular no longer take the bump
  *   color as a parameter.
- * - Bump color, if not set, is (0 0 1 1)
  *
  * I did not keep the original code for all of them.
  */
@@ -667,7 +665,7 @@ float4 DiffuseBumpPS_1(BumpVertexShaderOutput input) : COLOR0
 		bumpColor = tex2D(BumpTextureSampler, input.TexCoord);
 	}
 	else {
-		bumpColor = float4(0, 0, 1, 1);
+		bumpColor = float4(0.5, 0.5, 1, 1);
 	}
 	float3 bumpNormal = CalcBumpNormal(bumpColor, input);
 	float phongShadingFactor = CalcPhongShadingFactors_1(bumpNormal);
@@ -925,7 +923,15 @@ float4 DiffuseLightmapBumpSpecularPS_1(BumpVertexShaderOutput input) : COLOR0
 {
 	float4 diffuseColor = GetDiffuseColor(input.TexCoord);
 	diffuseColor *= input.Color;
-	float4 bumpColor = CombinedBumpColor(input);
+
+	// Fix issue reported by o0Crofty0o - this shader should not use CombinedBumpColor.
+	float4 bumpColor;
+	if (EnableBumpMaps) {
+		bumpColor = tex2D(BumpTextureSampler, input.TexCoord);
+	}
+	else {
+		bumpColor = float4(0.5, 0.5, 1, 1);
+	}
 	float3 bumpNormal = CalcBumpNormal(bumpColor, input);
 
 	float phongShadingFactor = CalcPhongShadingFactors_1(bumpNormal);
@@ -943,7 +949,15 @@ float4 DiffuseLightmapBumpSpecularPS_2(BumpVertexShaderOutput input) : COLOR0
 {
 	float4 diffuseColor = GetDiffuseColor(input.TexCoord);
 	diffuseColor *= input.Color;
-	float4 bumpColor = CombinedBumpColor(input);
+
+	// Fix issue reported by o0Crofty0o - this shader should not use CombinedBumpColor.
+	float4 bumpColor;
+	if (EnableBumpMaps) {
+		bumpColor = tex2D(BumpTextureSampler, input.TexCoord);
+	}
+	else {
+		bumpColor = float4(0.5, 0.5, 1, 1);
+	}
 	float3 bumpNormal = CalcBumpNormal(bumpColor, input);
 
 	float2 phongShadingFactors = CalcPhongShadingFactors_2(bumpNormal);
@@ -964,7 +978,15 @@ float4 DiffuseLightmapBumpSpecularPS_3(BumpVertexShaderOutput input) : COLOR0
 {
 	float4 diffuseColor = GetDiffuseColor(input.TexCoord);
 	diffuseColor *= input.Color;
-	float4 bumpColor = CombinedBumpColor(input);
+
+	// Fix issue reported by o0Crofty0o - this shader should not use CombinedBumpColor.
+	float4 bumpColor;
+	if (EnableBumpMaps) {
+		bumpColor = tex2D(BumpTextureSampler, input.TexCoord);
+	}
+	else {
+		bumpColor = float4(0.5, 0.5, 1, 1);
+	}
 	float3 bumpNormal = CalcBumpNormal(bumpColor, input);
 	
 	float3 phongShadingFactors = CalcPhongShadingFactors_3(bumpNormal);
@@ -1132,7 +1154,7 @@ float4 MetallicPS_3(BumpVertexShaderOutput input) : COLOR0
 
 float4 MetallicBump3PS_1_LQ(BumpVertexShaderOutput input) : COLOR0
 {
-	float4 bumpColor = tex2D(BumpTextureSampler, input.TexCoord);
+	float4 bumpColor = CombinedBumpColor(input);
 	float3 bumpNormal = CalcBumpNormal(bumpColor, input);
 	
 	float4 diffuseColor = GetDiffuseColor(input.TexCoord);
@@ -1159,7 +1181,7 @@ float4 MetallicBump3PS_1_LQ(BumpVertexShaderOutput input) : COLOR0
 
 float4 MetallicBump3PS_1_HQ(BumpVertexShaderOutput input) : COLOR0
 {
-	float4 bumpColor = tex2D(BumpTextureSampler, input.TexCoord);
+	float4 bumpColor = CombinedBumpColor(input);
 	float3 bumpNormal = CalcBumpNormal(bumpColor, input);
 	
 	float4 diffuseColor = GetDiffuseColor(input.TexCoord);
@@ -1186,7 +1208,7 @@ float4 MetallicBump3PS_1_HQ(BumpVertexShaderOutput input) : COLOR0
 
 float4 MetallicBump3PS_2(BumpVertexShaderOutput input) : COLOR0
 {
-	float4 bumpColor = tex2D(BumpTextureSampler, input.TexCoord);
+	float4 bumpColor = CombinedBumpColor(input);
 	float3 bumpNormal = CalcBumpNormal(bumpColor, input);
 	
 	float4 diffuseColor = GetDiffuseColor(input.TexCoord);
@@ -1215,7 +1237,7 @@ float4 MetallicBump3PS_2(BumpVertexShaderOutput input) : COLOR0
 
 float4 MetallicBump3PS_3(BumpVertexShaderOutput input) : COLOR0
 {
-	float4 bumpColor = tex2D(BumpTextureSampler, input.TexCoord);
+	float4 bumpColor = CombinedBumpColor(input);
 	float3 bumpNormal = CalcBumpNormal(bumpColor, input);
 	
 	float4 diffuseColor = GetDiffuseColor(input.TexCoord);
