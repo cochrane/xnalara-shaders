@@ -6,7 +6,9 @@ Real Bumpmapping for XNALara.
 How to install
 --------------
 
-Get the `EffectsArmature.xnb` from the downloads section. Copy this file into the folder XPS_10.8.7\Content or XNALara\Content
+If you're using XPS 10.9 or higher, you don't need to do anything. These shaders are included by default.
+
+For XNALara or earlier versions of XPS, get the `EffectsArmature.xnb` from the downloads section. Copy this file into the folder XPS_10.8.7\Content or XNALara\Content.
 
 Background
 ----------
@@ -20,11 +22,9 @@ This was the job of about an hour's hacking, and I haven't actually looked at th
 Known Bugs
 ----------
 
-*	Render groups 24 and 25 use mini bumpmaps even though they shouldn't, leading to potentially very odd results.
-*	Incorrect default normals are returned for groups 1, 20, 22, 23 (and also 24 and 25, but they should get different ones anyway) when bump mapping is disabled.
-*	Detail bump maps are not applied for render group 28 and 29.
+*	None at the moment
 
-I've fixed all of this in the source code. As soon as someone with a windows PC can compile it, the new version will be up.
+Note: There may be weirdness with some normal maps, since XNALara did not have real normal maps, and so some models were optimized for a broken target. The newest versions of XPS allow you to remap the normal map channels to fix this.
 
 Might look like a bug but isn't
 -------------------------------
